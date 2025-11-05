@@ -1,0 +1,5 @@
+pandas
+rapidfuzz
+google-generativeai
+underthesea
+pyvi
