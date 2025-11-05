@@ -3,3 +3,4 @@ rapidfuzz
 google-generativeai
 underthesea
 pyvi
+Flask

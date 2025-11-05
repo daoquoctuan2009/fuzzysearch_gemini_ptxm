@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hybrid Search</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .results-container { margin-top: 2em; }
+        .query-block { border: 1px solid #ccc; padding: 1em; margin-bottom: 1em; border-radius: 5px; }
+        .result-item { margin-bottom: 0.5em; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Hybrid Search</h1>
+    <form id="search-form" action="/search" method="post">
+        <textarea name="queries" rows="10" cols="80" placeholder="Enter one query per line...">{% if queries %}{{ "\n".join(queries) }}{% endif %}</textarea>
+        <br>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if results is defined %}
+    <hr>
+    <h2>Results</h2>
+    <form id="export-form" action="/export" method="post">
+        <input type="hidden" name="queries" value="{{ '\n'.join(queries) }}">
+        <div class="results-container">
+            {% for query, items in results.items() %}
+            <div class="query-block">
+                <h3>Query: {{ query }}</h3>
+                {% if items %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td><input type="radio" name="selection_{{ loop.parent.loop.index }}" value="{{ item.Idx }}"></td>
+                            <td>{{ item['Mã hàng'] }}</td>
+                            <td>{{ item['Tên hàng'] }}</td>
+                            <td>{{ "%.3f"|format(item.Score) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <p>Quantity: <input type="number" name="quantity_{{ loop.index }}" min="0" value="0" style="width: 60px;"></p>
+                {% else %}
+                <p>No results found for this query.</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit">Export Selected</button>
+    </form>
+    {% endif %}
+</body>
+</html>
